@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    volumes:
+      - ./app:/app
+    command: tail -f /dev/null
+    restart: unless-stopped
+    networks:
+      - local-network
+  wireshark:
+    image: lscr.io/linuxserver/wireshark:latest
+    container_name: wireshark
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    ports:
+      - "3000:3000"
+    networks:
+      - local-network
+    restart: unless-stopped
+
+networks:
+  local-network:
+    driver: bridge
