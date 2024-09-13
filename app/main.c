@@ -14,6 +14,6 @@ int main(int argc, char **argv) {
     t_traceroute    data;
     memset(&data, 0, sizeof(t_traceroute));
     parse_input(argc, argv, &data);
-    debug_input(&data);
+    //debug_input(&data);
     ft_traceroute(&data);
 }

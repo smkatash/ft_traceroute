@@ -25,7 +25,7 @@ int    init_udp_socket(t_traceroute *data) {
     return (0);
 }
 
-void create_socket(t_traceroute *data) {
+void init_socket(t_traceroute *data) {
 	if (init_icmp_socket(data)) {
         close(data->fd_icmp);
         exit(EXIT_FAILURE);

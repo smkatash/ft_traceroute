@@ -1,22 +1,13 @@
 #include "ft_traceroute.h"
 
-unsigned short checksum(void *header, int len)
-{
-	unsigned short *ptr = (unsigned short *)header;
-	unsigned int sum = 0;
-	unsigned short checksum;
-
-	while (len > 1)
-	{
-		sum += *ptr++;
-		len -= 2;
-	}
-	if (len == 1)
-	{
-		sum += *((unsigned char *)ptr);
-	}
-	sum = (sum >> 16) + (sum & 0xFFFF);
-	sum += (sum >> 16);
-	checksum = (unsigned short)~sum; 
-	return (checksum);
+void print_time_diff(struct timeval *tv_start, struct timeval *tv_end) {
+    struct timeval tv_diff;
+    tv_diff.tv_sec = tv_end->tv_sec - tv_start->tv_sec;
+    tv_diff.tv_usec = tv_end->tv_usec - tv_start->tv_usec;
+    if (tv_diff.tv_usec < 0) {
+        tv_diff.tv_sec--;
+        tv_diff.tv_usec += 1000000;
+    }
+    double milliseconds = (tv_diff.tv_sec * 1000.0) + (tv_diff.tv_usec / 1000.0);
+    printf(" %.3f ms ", milliseconds);
 }

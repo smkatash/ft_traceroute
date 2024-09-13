@@ -6,7 +6,7 @@
 #    By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/11 11:19:19 by kanykei           #+#    #+#              #
-#    Updated: 2024/08/15 17:56:06 by kanykei          ###   ########.fr        #
+#    Updated: 2024/09/11 11:50:20 by kanykei          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ NAME		:= ft_traceroute
 
 VPATH		:= src
 
-SRC			:= main.c parser.c ft_traceroute.c socket.c
+SRC			:= main.c parser.c ft_traceroute.c socket.c utils.c
 
 # ================================ Flags ===================================== #
 OBJ			:= $(addprefix obj/,$(notdir $(SRC:.c=.o)))
