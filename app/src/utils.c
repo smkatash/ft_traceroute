@@ -9,5 +9,11 @@ void print_time_diff(struct timeval *tv_start, struct timeval *tv_end) {
         tv_diff.tv_usec += 1000000;
     }
     double milliseconds = (tv_diff.tv_sec * 1000.0) + (tv_diff.tv_usec / 1000.0);
-    printf(" %.3f ms ", milliseconds);
+    dprintf(STDOUT_FILENO," %.3f ms ", milliseconds);
+}
+
+void    clean_up(t_traceroute *data) {
+    close(data->fd_icmp);
+    close(data->fd_udp);
+    free(data->destination.hostname);
 }

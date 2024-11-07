@@ -20,8 +20,7 @@ services:
       - TZ=Etc/UTC
     ports:
       - "3000:3000"
-    networks:
-      - local-network
+    network_mode: host
     restart: unless-stopped
 
 networks:

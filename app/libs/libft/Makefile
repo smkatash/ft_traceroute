@@ -6,56 +6,44 @@
 #    By: kanykei <kanykei@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/11 11:19:19 by kanykei           #+#    #+#              #
-#    Updated: 2024/11/07 19:55:15 by kanykei          ###   ########.fr        #
+#    Updated: 2024/11/07 19:55:10 by kanykei          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # ================================= Target =================================== #
-NAME		:= ft_traceroute
+NAME		:= libft.a
 
 # ================================ Sources =================================== #
 
-VPATH		:= src
-
-SRC			:= main.c parser.c ft_traceroute.c socket.c utils.c logger.c
+SRC			:= ft_memset.c ft_memcpy.c ft_atoi.c ft_bzero.c ft_isdigit.c ft_strcmp.c \
+				ft_strdup.c ft_strlen.c ft_memcp.c
 
 # ================================ Flags ===================================== #
 OBJ			:= $(addprefix obj/,$(notdir $(SRC:.c=.o)))
 CC			:= gcc
-CFLAGS 		:= -Wall -Wextra -Werror #-fsanitize=address
-
-# ============================== Libraries ==================================== #
-INCFL		:=	-I./include -I./libs/libft
-LIBS		:= 	-L./libs/libft -lft
-LIBFT		:=	libs/libft/libft.a
+CFLAGS 		:= -Wall -Wextra -Werror
 
 # ================================ Rules ===================================== #
+
 .SILENT:
 
-all: $(NAME) 
+all: $(NAME)
 
-$(NAME)		: $(OBJ) $(LIBFT) 
-			$(CC) $(OBJ) $(LIBS) -o $(NAME)
-			@echo "\033[1;32m ft_traceroute is compiled \033[0m"
+$(NAME)		: $(OBJ)
+			ar rcs $(NAME) $(OBJ)
 
 obj/%.o		: %.c | obj
-			$(CC) $(CFLAGS) $(INCFL) -c $< -o $@
+			$(CC) $(CFLAGS) -c $< -o $@
 
 obj			:
 			mkdir obj
 
-$(LIBFT):
-			- (cd libs/libft && make && make clean)
-
 clean		:
 			rm -rf obj
-			@echo "deleting object files..."			
 
 fclean		: clean
 			rm $(NAME)
-			@echo "deleting ft_traceroute..."
-			- (cd libs/libft && make fclean)
 
-re			: clean all
+re: fclean all
 
 .PHONY		:	all clean fclean re 

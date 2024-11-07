@@ -4,7 +4,10 @@ RUN apt-get update && \
     apt-get install -y \
     make \
     build-essential \
-    valgrind
+    valgrind \
+    traceroute \
+    tcpdump
+
     
 
 WORKDIR /app
