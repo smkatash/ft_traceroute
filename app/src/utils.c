@@ -13,7 +13,7 @@ void print_time_diff(struct timeval *tv_start, struct timeval *tv_end) {
 }
 
 void    clean_up(t_traceroute *data) {
-    close(data->fd_icmp);
-    close(data->fd_udp);
-    free(data->destination.hostname);
+    if (data->fd_icmp) close(data->fd_icmp);
+    if (data->fd_udp) close(data->fd_udp);
+    if (data->destination.hostname) free(data->destination.hostname);
 }

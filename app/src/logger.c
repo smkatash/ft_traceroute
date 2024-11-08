@@ -1,7 +1,7 @@
 #include "ft_traceroute.h"
 
 void	log_error(const char *err) {
-	dprintf(STDERR_FILENO, "ft_traceroute: %s\n", err);
+	dprintf(STDERR_FILENO, "%s: %s\n", PROG_NAME, err);
 }
 
 void    log_message(const char *str) {
@@ -10,7 +10,7 @@ void    log_message(const char *str) {
 
 void    log_header(t_traceroute *data) {
     dprintf(STDOUT_FILENO, "%s to %s (%s), %d hops max, %d byte packets\n", PROG_NAME, data->destination.hostname, \
-        data->destination.ip_addr, DEFAULT_MAX_HOPS, MAX_PACKET_SIZE);
+        data->destination.ip_addr, DEFAULT_MAX_HOPS, DEFAULT_UDP_MAX_PACKET_SIZE);
 }
 
 void    log_hop(int hop) {

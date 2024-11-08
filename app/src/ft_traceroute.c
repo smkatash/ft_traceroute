@@ -1,9 +1,11 @@
 #include "ft_traceroute.h"
 
 static void    send_udp_probe(t_traceroute *data) {
-    char packet[DEFAULT_PAYLOAD_SIZE];
-    char *pdata = "Hello!";
-    ft_memcpy(packet, pdata, strlen(pdata));
+    size_t payload_size = data->packet_len > (IP_HEADER_SIZE + UDP_HEADER_SIZE)
+                              ? data->packet_len - IP_HEADER_SIZE - UDP_HEADER_SIZE
+                              : 0;
+    char packet[payload_size];
+    ft_memset(packet, 0, payload_size);
     ssize_t bytes_sent = sendto(data->fd_udp, packet, sizeof(packet),
             0, (struct sockaddr *)&data->destination.inet_addr, sizeof(data->destination.inet_addr));
     if (bytes_sent < 0) {
@@ -78,16 +80,16 @@ static void	sighandler(int sig)
 }
 
 int    ft_traceroute(t_traceroute *data) {
-    unsigned char	msg[MAX_PACKET_SIZE];
+    unsigned char	msg[MAX_ICMP_PACKET_SIZE];
     struct timeval  tv;
     struct timeval  tv_end;
-    int             prev_port_num;
     int             destination_reached;
     int             fds;
+    int             port;
 
     destination_reached = 0;
     fds = 0;
-    prev_port_num = 0;
+    port = data->options.port;
     init_socket(data);
     if (bind_socket(data) == -1) {
         clean_up(data);
@@ -95,7 +97,7 @@ int    ft_traceroute(t_traceroute *data) {
     }
     log_header(data);
     signal(SIGINT, &sighandler);
-    for (int hop = 1; hop <= DEFAULT_MAX_HOPS; hop++) {
+    for (int hop = 1; hop <= data->options.ttl; hop++) {
         if (setsockopt(data->fd_udp, IPPROTO_IP, IP_TTL, &hop, sizeof(hop)) < 0) {
             log_error(strerror(errno));
             close(fds);
@@ -105,8 +107,8 @@ int    ft_traceroute(t_traceroute *data) {
         log_hop(hop);
         struct timeval timeout = {SHORT_TIMEOUT_SEC, SHORT_TIMEOUT_USEC};
         fd_set  rfds;
-        for (int probe = 0; probe < DEFAULT_MAX_PROBES; probe++) {
-            data->destination.inet_addr.sin_port = htons(DEFAULT_HIGH_PORT + hop + prev_port_num + probe);
+        for (int probe = 0; probe < data->options.max_queries; probe++) {
+            data->destination.inet_addr.sin_port = htons(port++);
             data->dest_port = data->destination.inet_addr.sin_port;
             if (gettimeofday(&tv, NULL) == -1) {
                 log_error(strerror(errno));
@@ -144,7 +146,6 @@ int    ft_traceroute(t_traceroute *data) {
             }
         }
         dprintf(STDOUT_FILENO, "\n");
-        prev_port_num += 2;
         if (destination_reached) {
             break;
         }
